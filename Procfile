@@ -1,1 +1,1 @@
-web: gunicorn foireminder/foireminder/wsgi.py -b 0.0.0.0:$PORT
+web: python foireminder/manage.py run_gunicorn -b 0.0.0.0:$PORT
