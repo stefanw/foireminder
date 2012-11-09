@@ -129,6 +129,7 @@ INSTALLED_APPS = (
 
     'south',
     'floppyforms',
+    'gunicorn',
 )
 
 # A sample logging configuration. The only tangible logging
