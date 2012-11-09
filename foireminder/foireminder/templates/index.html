@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% load url from future %}
+
+{% load i18n %}
+
+{% block body %}
+
+<div class="row">
+  <div class="span6">
+    <h3>{% trans "Requests that need to be made" %}</h3>
+    {% for request in requests %}
+      {% with object=request %}
+        {% include "reminders/_reminderrequest.html" %}
+      {% endwith %}
+    {% endfor %}
+  </div>
+  <div class="span6">
+    <form method="post" action="{% url "new" %}">
+      {% csrf_token %}
+    	<div class="inline">
+        {{ form.interval.errors }}
+        {{ form.frequency.errors }}
+    	  Every {{ form.interval }}
+    	  {{ form.frequency }}
+    	  request the following:
+    	</div>
+      {{ form.subject.errors }}
+      {{ form.subject.label_tag }}
+      {{ form.subject }}
+      {{ form.body.errors }}
+      {{ form.body.label_tag }}
+      {{ form.body }}
+      {{ form.foisite.errors }}
+      {{ form.foisite.label_tag }}
+      {{ form.foisite }}
+      <div id="foisiteurl-container" style="display:none">
+        {{ form.url.errors }}
+        {{ form.url }}
+      </div>
+      <p>
+        <button type="submit" class="btn btn-primary">{% trans "Save this reminder" %}</button>
+      </p>
+    </form>
+  </div>
+</div>
+<div class="row">
+  <div class="span6">
+    <h3>{% trans "Active reminders" %}</h3>
+    {% for reminder in reminders %}
+      <h4>{{ reminder }}</h4>
+    {% endfor %}
+  </div>
+  <div class="span6">
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,61 @@
+{% load url from future %}{% load i18n %}<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}" class="no-js">
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>{% block title %}{% trans "FOI Reminder" %}{% endblock %}</title>
+  <link href="{{ STATIC_URL }}css/bootstrap.css" rel="stylesheet">
+  <link href="{{ STATIC_URL }}css/bootstrap-responsive.css" rel="stylesheet">
+  <meta http-equiv="Content-Language" content="{{ LANGUAGE_CODE }}" />
+  <meta name="language" content="{{ LANGUAGE_CODE }}" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="shortcut icon" href="{{ STATIC_URL }}img/favicon.ico" />
+  <link rel="apple-touch-icon" href="{{ STATIC_URL }}img/apple-touch-icon.png"/>
+
+  <script src="{{ STATIC_URL }}js/jquery.js" type="text/javascript" charset="utf-8"></script>
+  {% block extra_head %}
+  {% endblock %}
+</head>
+
+<body>
+
+  <div id="main" class="container">
+    <div class="page-header">
+      <h1>
+        FOI Reminder <small>{% trans "Keep asking" %}</small>
+      </h1>
+    </div>
+    {% if messages %}
+    <div class="container">
+      {% for message in messages %}
+      <div class="alert {% if message.tags %}alert-{{ message.tags }}"{% endif %}>
+        <button type="button" class="close" data-dismiss="alert">×</button>
+        {{ message }}
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+  {% block body %}
+  {% endblock %}
+  </div>
+
+<hr/>
+<footer class="container" id="footer">
+    <div class="row">
+      <ul class="span12 unstyled pagination-centered">
+
+      </ul>
+    </div>
+  </footer>
+  {% block extra_footer %}
+  {% endblock %}
+  <script>
+  $('.show-div').click(function(e){
+    e.preventDefault();
+    $($(this).attr('href')).show();
+  });
+  </script>
+</body>
+</html>

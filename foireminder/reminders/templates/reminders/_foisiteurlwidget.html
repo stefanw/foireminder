@@ -1,0 +1,17 @@
+{% load i18n %}
+  {% blocktrans %}Visit{% endblocktrans %}
+  {% include "floppyforms/input.html" %}
+<script>
+  (function(){
+    var foisites = {
+      {% for foisite in foisites %}
+        "{{ foisite.pk }}": {{ foisite.as_json|safe }}{% if not forloop.last %},{% endif %}
+      {% endfor %}
+    };
+    $('#id_foisite').change(function(){
+      foisites[$(this).val()]
+      $('#foisiteurl-container').show();
+    });
+  }())
+</script>
+<br/>

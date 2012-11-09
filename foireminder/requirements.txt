@@ -1,0 +1,7 @@
+Django==1.4.2
+South==0.7.6
+django-floppyforms==1.0
+python-dateutil==2.1
+requests==0.14.2
+six==1.2.0
+wsgiref==0.1.2

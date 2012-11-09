@@ -1,0 +1,25 @@
+{% load i18n %}
+<h4>{{ object.subject|truncatechars:50 }}</h4>
+<p>{{ object.body|truncatewords:50 }}</p>
+<a target="_blank" class="btn btn-primary" href="{{ object.get_request_url }}">
+  <i class="icon-arrow-right icon-white"></i>
+  {% trans "Make this request!" %}
+</a>
+<a class="btn btn-success show-div" href="#made-{{ object.pk }}">
+  <i class="icon-ok icon-white"></i>
+  {% trans "Yes, I made this request" %}
+</a>
+<div id="made-{{ object.pk }}" style="display:none" class="well">
+  {% with form=object.get_made_request_form %}
+    <form class="inline" method="post" action="{% url request_made pk=object.pk %}">
+      {% csrf_token %}
+        {{ form.url.label_tag }}
+        {{ form.url }}
+      </p>
+      <button type="submit" class="btn btn-success">
+        <i class="icon-ok icon-white"></i>
+        {% trans "Save this" %}
+      </button>
+    </form>
+  {% endwith %}
+</div>
