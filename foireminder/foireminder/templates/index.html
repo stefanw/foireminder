@@ -20,9 +20,9 @@
     	<div class="inline">
         {{ form.interval.errors }}
         {{ form.frequency.errors }}
-    	  Every {{ form.interval }}
+    	  {% trans "Every" %} {{ form.interval }}
     	  {{ form.frequency }}
-    	  request the following:
+    	  <br/>{% trans "request the following:" %}
     	</div>
       {{ form.subject.errors }}
       {{ form.subject.label_tag }}
