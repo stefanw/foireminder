@@ -47,7 +47,10 @@
   <div class="span6">
     <h3>{% trans "Active reminders" %}</h3>
     {% for reminder in reminders %}
-      <h4>{{ reminder }}</h4>
+      <h4>
+        <small>{% blocktrans with freq=reminder.readable_frequency interval=reminder.interval %}Every {{ interval }} {{ freq }} request{% endblocktrans %}</small>
+        <br/>{{ reminder.subject }}
+      </h4>
     {% endfor %}
   </div>
   <div class="span6">
