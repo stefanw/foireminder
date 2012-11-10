@@ -52,7 +52,7 @@ def new(request):
 
 def request_made(request, pk):
     reminder = get_object_or_404(ReminderRequest, pk=int(pk))
-    form = MadeRequestForm(reminder, request.POST)
+    form = MadeRequestForm(reminder, request.POST, prefix="made-%s" % reminder.pk)
     if form.is_valid():
         form.save()
         messages.add_message(request, messages.SUCCESS, _('Thanks for making this request!'))

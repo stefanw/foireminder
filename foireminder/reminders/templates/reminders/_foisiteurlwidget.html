@@ -1,5 +1,7 @@
 {% load i18n %}
-  {% blocktrans %}Visit{% endblocktrans %}
+  <p><a href="" id="listurl">{% trans "Go here to find your public authority" %}</a></p>
+  <p id="tutorial"></p>
+  <p>{% trans "The URL you are looking for looks something like this:" %} <span class="muted" id="example_url"></span></p>
   {% include "floppyforms/input.html" %}
 <script>
   (function(){
@@ -9,7 +11,11 @@
       {% endfor %}
     };
     $('#id_foisite').change(function(){
-      foisites[$(this).val()]
+      var foisite = foisites[$(this).val()];
+      $('#tutorial').html(foisite.tutorial);
+      $('#listurl').attr('href', foisite.list_url);
+      $('#example_url').text(foisite.example_url);
+      $('#id_url').attr('placeholder', foisite.example_url);
       $('#foisiteurl-container').show();
     });
   }())

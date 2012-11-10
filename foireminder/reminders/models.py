@@ -12,13 +12,16 @@ import urllib
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
+from django.utils import timezone
 
-RAW_FREQUENCIES = (("YEARLY", (_("Yearly"), _('Years'), rrule.YEARLY)),
-        ("MONTHLY", (_("Monthly"), _('Months'), rrule.MONTHLY)),
+
+RAW_FREQUENCIES = (
+    ("YEARLY", (_("Yearly"), _('Years'), rrule.YEARLY)),
+    ("MONTHLY", (_("Monthly"), _('Months'), rrule.MONTHLY)),
 )
-
 FREQUENCIES = [(f[0], f[1][0]) for f in RAW_FREQUENCIES]
 READABLE_FREQUENCIES = [(f[0], f[1][1]) for f in RAW_FREQUENCIES]
+READABLE_FREQUENCIES_DICT = dict(READABLE_FREQUENCIES)
 RRULE_FREQUENCY = dict([(f[0], f[1][2]) for f in RAW_FREQUENCIES])
 
 
@@ -66,6 +69,14 @@ class ReminderRule(models.Model):
 
     def __unicode__(self):
         return u'%s (%s %s)' % (self.subject, self.interval, self.frequency)
+
+    @property
+    def readable_frequency(self):
+        return READABLE_FREQUENCIES_DICT[self.frequency]
+
+    def next_date(self):
+        return ReminderRequest.objects.filter(rule=self,
+            start__gte=timezone.now())[0]
 
     def get_rrule_object(self):
         if self.frequency:
@@ -122,7 +133,7 @@ class ReminderRequest(models.Model):
 
     def get_made_request_form(self):
         from .forms import MadeRequestForm
-        return MadeRequestForm(self)
+        return MadeRequestForm(self, prefix="made-%s" % self.pk)
 
     def get_request_url(self):
         subject = urllib.quote(self.subject.encode('utf-8'))

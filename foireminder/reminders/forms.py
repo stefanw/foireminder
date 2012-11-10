@@ -29,7 +29,7 @@ class NewReminderForm(forms.Form):
     body = forms.CharField(widget=forms.Textarea)
     foisite = forms.ChoiceField(label=_('Select site and public body'),
         choices=get_foisite_choices())
-    url = forms.CharField(widget=FoiSiteURLWidget)
+    url = forms.CharField(widget=FoiSiteURLWidget(attrs={'class': 'span6'}))
 
     def clean(self):
         if 'url' in self.cleaned_data:
