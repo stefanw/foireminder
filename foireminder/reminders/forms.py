@@ -11,7 +11,8 @@ from .widgets import FoiSiteURLWidget
 def get_foisite_choices():
     # TODO: Call on request, not server start
     foisites = FoiSite.objects.all()
-    return [('', '---')] + [(fs.pk, fs.name) for fs in foisites]
+    return [('', '---')] + [(fs.pk, '%s (%s)' % (fs.name,
+        fs.country)) for fs in foisites]
 
 
 class NewReminderForm(forms.Form):
