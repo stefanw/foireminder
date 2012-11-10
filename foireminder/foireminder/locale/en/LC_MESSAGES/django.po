@@ -1,0 +1,156 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-11-10 15:41-0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: settings.py:43
+msgid "German"
+msgstr ""
+
+#: settings.py:44
+msgid "English"
+msgstr ""
+
+#: settings.py:45
+msgid "Portuguese"
+msgstr ""
+
+#: settings.py:46
+msgid "Spanish"
+msgstr ""
+
+#: reminders/forms.py:29
+msgid "Subject"
+msgstr ""
+
+#: reminders/forms.py:31
+msgid "Select site and public body"
+msgstr ""
+
+#: reminders/forms.py:42
+msgid "The given FOI site does not exist in our database."
+msgstr ""
+
+#: reminders/forms.py:45
+msgid "The given URL does not seem to be a requesting page."
+msgstr ""
+
+#: reminders/forms.py:50
+msgid "Please give the URL of this request."
+msgstr ""
+
+#: reminders/forms.py:63
+msgid ""
+"The given site does not seem to be a valid request page for the FOI site."
+msgstr ""
+
+#: reminders/forms.py:67
+msgid "The given site does not seem to contain the request text."
+msgstr ""
+
+#: reminders/models.py:19
+msgid "Yearly"
+msgstr ""
+
+#: reminders/models.py:19
+msgid "Years"
+msgstr ""
+
+#: reminders/models.py:20
+msgid "Monthly"
+msgstr ""
+
+#: reminders/models.py:20
+msgid "Months"
+msgstr ""
+
+#: reminders/models.py:36
+msgid "Regular Expression to match request pages of this FOI site"
+msgstr ""
+
+#: reminders/models.py:38
+msgid "Regular Expression to match requesting page of this FOI site"
+msgstr ""
+
+#: reminders/models.py:40
+msgid "String format pattern including {url}, {subject} and {body}"
+msgstr ""
+
+#: reminders/views.py:58
+msgid "Thanks for making this request!"
+msgstr ""
+
+#: reminders/templates/reminders/_foisiteurlwidget.html:2
+msgid "Go here to find your public authority"
+msgstr ""
+
+#: reminders/templates/reminders/_foisiteurlwidget.html:4
+msgid "The URL you are looking for looks something like this:"
+msgstr ""
+
+#: reminders/templates/reminders/_reminderrequest.html:8
+msgid "Make this request!"
+msgstr ""
+
+#: reminders/templates/reminders/_reminderrequest.html:12
+msgid "Yes, I made this request"
+msgstr ""
+
+#: reminders/templates/reminders/_reminderrequest.html:23
+msgid "Save this"
+msgstr ""
+
+#: templates/base.html:6
+msgid "FOI Reminder"
+msgstr ""
+
+#: templates/base.html:26
+msgid "Keep asking"
+msgstr ""
+
+#: templates/base.html:60
+msgid "Made at IACC Hackathon 2012"
+msgstr ""
+
+#: templates/base.html:62
+msgid "Code on GitHub"
+msgstr ""
+
+#: templates/index.html:10
+msgid "Requests that need to be made"
+msgstr ""
+
+#: templates/index.html:23
+msgid "Every"
+msgstr ""
+
+#: templates/index.html:25
+msgid "request the following:"
+msgstr ""
+
+#: templates/index.html:41
+msgid "Save this reminder"
+msgstr ""
+
+#: templates/index.html:48
+msgid "Active reminders"
+msgstr ""
+
+#: templates/index.html:51
+#, python-format
+msgid "Every %(interval)s %(freq)s request"
+msgstr ""
