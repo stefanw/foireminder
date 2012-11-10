@@ -25,6 +25,18 @@
       <h1>
         FOI Reminder <small>{% trans "Keep asking" %}</small>
       </h1>
+      <div style="position:absolute;top:0;right:0">
+        <form action="/language/setlang/" method="post">
+          {% csrf_token %}
+          <input name="next" type="hidden" value="/" />
+            {% get_language_info_list for LANGUAGES as languages %}
+            {% for language in languages %}
+              <button class="btn btn-mini" name="language" value="{{ language.code }}">
+                {{ language.name_local }}
+              </button>
+            {% endfor %}
+        </form>
+      </div>
     </div>
     {% if messages %}
     <div class="container">
