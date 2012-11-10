@@ -35,7 +35,16 @@ TIME_ZONE = 'America/Chicago'
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'en'
+
+gettext = lambda s: s
+
+LANGUAGES = (
+    ('de', gettext('German')),
+    ('en', gettext('English')),
+    # ('pt', gettext('Portuguese')),
+    # ('es', gettext('Spanish')),
+)
 
 SITE_ID = 1
 
@@ -46,6 +55,10 @@ USE_I18N = True
 # If you set this to False, Django will not format dates, numbers and
 # calendars according to the current locale.
 USE_L10N = True
+
+LOCALE_PATHS = (
+    os.path.join(PROJECT_ROOT, "locale"),
+)
 
 # If you set this to False, Django will not use timezone-aware datetimes.
 USE_TZ = True
@@ -93,8 +106,9 @@ TEMPLATE_LOADERS = (
 )
 
 MIDDLEWARE_CLASSES = (
-    'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -125,7 +139,8 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
-    'reminders',
+
+    'foireminder.reminders',
 
     'south',
     'floppyforms',
