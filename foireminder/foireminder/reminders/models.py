@@ -5,19 +5,24 @@ Licensed under NewBSD
 
 """
 import json
-from dateutil import rrule
 from itertools import islice
 import urllib
 
+from dateutil import rrule, relativedelta
+
 from django.db import models
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
-from django.utils import timezone
+from django.utils import timezone, formats
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+import django.dispatch
 
 
 RAW_FREQUENCIES = (
-    ("YEARLY", (_("Yearly"), _('Years'), rrule.YEARLY)),
-    ("MONTHLY", (_("Monthly"), _('Months'), rrule.MONTHLY)),
+    ("YEARLY", (_("Yearly"), _('Years'), rrule.YEARLY, 'years')),
+    ("MONTHLY", (_("Monthly"), _('Months'), rrule.MONTHLY, 'months')),
 )
 FREQUENCIES = [(f[0], f[1][0]) for f in RAW_FREQUENCIES]
 READABLE_FREQUENCIES = [(f[0], f[1][1]) for f in RAW_FREQUENCIES]
@@ -66,6 +71,7 @@ class ReminderRule(models.Model):
     frequency = models.CharField(choices=FREQUENCIES, max_length=10, blank=True)
     interval = models.IntegerField(null=True, default=6)
     url = models.URLField(blank=True, default='')
+    rolling = True
 
     def __unicode__(self):
         return u'%s (%s %s)' % (self.subject, self.interval, self.frequency)
@@ -74,9 +80,26 @@ class ReminderRule(models.Model):
     def readable_frequency(self):
         return READABLE_FREQUENCIES_DICT[self.frequency]
 
+    @property
+    def subject_dummy(self):
+        return self.format_string(self.subject)
+
+    @property
+    def body_dummy(self):
+        return self.format_string(self.body)
+
+    def format_string(self, template):
+        return template.format(
+            last_date=_('<last request date>'),
+            date=_('<date of reminder>')
+        )
+
     def next_date(self):
-        return ReminderRequest.objects.filter(rule=self,
-            start__gte=timezone.now())[0]
+        try:
+            return ReminderRequest.objects.filter(rule=self,
+                start__gte=timezone.now()).order_by('start')[0]
+        except IndexError:
+            return None
 
     def get_rrule_object(self):
         if self.frequency:
@@ -85,6 +108,12 @@ class ReminderRule(models.Model):
                 params['interval'] = self.interval
             return rrule.rrule(RRULE_FREQUENCY[self.frequency], dtstart=self.start, **params)
 
+    def get_before(self, date):
+        if self.frequency:
+            key = dict(RAW_FREQUENCIES)[self.frequency][3]
+            return self.start + relativedelta.relativedelta(**{key: -self.interval})
+        return date
+
     def get_occurrence_dates(self, start, end=None):
         """
         returns a list of occurrences for this event from start to end.
@@ -92,25 +121,31 @@ class ReminderRule(models.Model):
         if self.frequency:
             rule = self.get_rrule_object()
             if end is not None:
-                o_starts = rule.between(start, end, inc=True)
+                o_starts = rule.between(start, end, inc=False)
                 for o_start in o_starts:
                     yield o_start
             else:
-                first = True
                 while True:
-                    next = rule.after(start, inc=first)
-                    yield next
-                    if first:
-                        first = False
-                        start = next
+                    start = rule.after(start, inc=False)
+                    yield start
         else:
             yield self.start
 
-    def generate_request_reminders(self, start=None, count=5):
+    def generate_request_reminders(self, start=None, count=1):
         if start is None:
             start = self.start
         for date in islice(self.get_occurrence_dates(start), 0, count):
             yield ReminderRequest(rule=self, start=date)
+
+    def create_initial_reminder(self):
+        return ReminderRequest.objects.create(rule=self, start=timezone.now())
+
+    def get_email_form(self, post_data=None):
+        from .forms import EmailSubscriptionForm
+        if post_data:
+            return EmailSubscriptionForm(self, post_data, prefix="email-%s" % self.pk)
+        else:
+            return EmailSubscriptionForm(self, prefix="email-%s" % self.pk)
 
 
 class ReminderRequest(models.Model):
@@ -118,24 +153,58 @@ class ReminderRequest(models.Model):
     start = models.DateTimeField()
     request_url = models.CharField(max_length=255, blank=True)
     requested = models.BooleanField(default=False)
-    user = models.ForeignKey(User, null=True)
+    request_date = models.DateTimeField(null=True, blank=True)
+    previous = models.ForeignKey('self', null=True, blank=True,
+        on_delete=models.SET_NULL)
+    user = models.ForeignKey(User, null=True, blank=True)
+
+    request_made = django.dispatch.Signal()
 
     def __unicode__(self):
         return u"%s (%s)" % (self.rule.subject, self.start)
 
     @property
     def subject(self):
-        return self.rule.subject
+        return self.format_string(self.rule.subject)
 
     @property
     def body(self):
-        return self.rule.body.format()
+        return self.format_string(self.rule.body)
+
+    def format_string(self, template):
+        return template.format(
+            last_date=formats.date_format(
+                self.get_last_date(), _("SHORT_DATE_FORMAT")
+            ),
+            date=formats.date_format(
+                timezone.now(), _("SHORT_DATE_FORMAT")
+            )
+        )
+
+    def get_last_date(self):
+        if self.previous:
+            return self.previous.request_date
+        else:
+            return self.rule.get_before(self.start)
+
+    def get_date(self):
+        return self.start
 
     def get_made_request_form(self):
         from .forms import MadeRequestForm
         return MadeRequestForm(self, prefix="made-%s" % self.pk)
 
-    def get_request_url(self):
+    def create_next_reminder(self):
+        start_date = self.start
+        if self.rule.rolling and self.request_date:
+            start_date = self.request_date
+        gen = self.rule.generate_request_reminders(start=start_date)
+        reminder = list(gen)[0]
+        reminder.previous = self
+        reminder.save()
+        return reminder
+
+    def get_make_request_url(self):
         subject = urllib.quote(self.subject.encode('utf-8'))
         body = urllib.quote(self.body.encode('utf-8'))
         return self.rule.foisite.pattern.format(
