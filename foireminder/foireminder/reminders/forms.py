@@ -1,10 +1,10 @@
 import floppyforms as forms
-import requests
 import re
 
 from django.utils.translation import ugettext_lazy as _
+from django.utils import timezone
 
-from .models import FoiSite, READABLE_FREQUENCIES
+from .models import FoiSite, EmailReminder, READABLE_FREQUENCIES
 from .widgets import FoiSiteURLWidget
 
 
@@ -26,8 +26,18 @@ class NewReminderForm(forms.Form):
             'class': 'input-small'
         }),
         initial='MONTHLY')
-    subject = forms.CharField(label=_('Subject'))
-    body = forms.CharField(widget=forms.Textarea)
+    subject = forms.CharField(
+        label=_('Subject'),
+        widget=forms.TextInput(attrs={
+            'class': 'span5',
+            'placeholder': _('All contracts since {last_date}')
+        }))
+    body = forms.CharField(label=_('Body'),
+        widget=forms.Textarea(attrs={
+            'class': 'span3',
+            'placeholder': _('Please send me all contracts between {last_date} and {date}')
+        })
+    )
     foisite = forms.ChoiceField(label=_('Select site and public body'),
         choices=get_foisite_choices())
     url = forms.CharField(widget=FoiSiteURLWidget(attrs={'class': 'span6'}))
@@ -61,13 +71,36 @@ class MadeRequestForm(forms.Form):
         if not re.match(self.reminder.rule.foisite.url_pattern, url):
             raise forms.ValidationError(
                 _('The given site does not seem to be a valid request page for the FOI site.'))
-        response = requests.get(url)
-        if not self.reminder.subject in response.text:
-            raise forms.ValidationError(
-                _('The given site does not seem to contain the request text.'))
+        # response = requests.get(url)
+        # if not self.reminder.subject in response.text:
+        #     raise forms.ValidationError(
+        #         _('The given site does not seem to contain the request text.'))
         return url
 
     def save(self):
         self.reminder.request_url = self.cleaned_data['url']
         self.reminder.requested = True
+        self.reminder.request_date = timezone.now()
         self.reminder.save()
+        self.reminder.request_made.send(sender=self.reminder)
+
+
+class EmailSubscriptionForm(forms.Form):
+    email = forms.EmailField(label=_('Email'), widget=forms.EmailInput(attrs={
+        'placeholder': 'your-email@example.com'
+    }), help_text=_("No spam. You can always unsubscribe."))
+
+    def __init__(self, rule, *args, **kwargs):
+        self.rule = rule
+        super(EmailSubscriptionForm, self).__init__(*args, **kwargs)
+
+    def save(self, language):
+        email = self.cleaned_data['email']
+        if EmailReminder.objects.filter(email=email, rule=self.rule).exists():
+            return
+        return EmailReminder.objects.create(
+            email=email,
+            rule=self.rule,
+            timestamp=timezone.now(),
+            language=language
+        )

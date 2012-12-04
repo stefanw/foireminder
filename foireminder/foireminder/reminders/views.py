@@ -9,7 +9,7 @@ from .models import ReminderRule, ReminderRequest
 from .forms import NewReminderForm, MadeRequestForm
 
 
-def index(request, new_reminder_form=None):
+def index(request, new_reminder_form=None, status=200):
     start = timezone.now()
     after = start - timedelta(days=7)
     due_requests = (ReminderRequest.objects
@@ -17,21 +17,27 @@ def index(request, new_reminder_form=None):
         .exclude(requested=True)
         .select_related('rule', 'rule__foisite')
     )
+    made_requests = (ReminderRequest.objects
+        .filter(requested=True)
+        .order_by('request_date')
+        .select_related('rule', 'rule__foisite')
+    )
     reminders = ReminderRule.objects.all()
     if new_reminder_form is None:
         new_reminder_form = NewReminderForm()
     return render(request, 'index.html', {
         'form': new_reminder_form,
-        'requests': due_requests,
+        'due_requests': due_requests,
+        'made_requests': made_requests,
         'reminders': reminders
-    })
+    }, status=status)
 
 
 def new(request):
     form = NewReminderForm(request.POST)
     if not form.is_valid():
         messages.add_message(request, messages.ERROR, '')
-        return index(request, new_reminder_form=form)
+        return index(request, new_reminder_form=form, status=400)
     start = timezone.now().replace(hour=0, minute=0, second=0, microsecond=0)
     rule = ReminderRule(
         foisite=form.foisite,
@@ -45,8 +51,7 @@ def new(request):
         url=form.cleaned_data['url'],
     )
     rule.save()
-    for reminder in rule.generate_request_reminders():
-        reminder.save()
+    rule.create_initial_reminder()
     return redirect('index')
 
 
@@ -56,6 +61,17 @@ def request_made(request, pk):
     if form.is_valid():
         form.save()
         messages.add_message(request, messages.SUCCESS, _('Thanks for making this request!'))
+    else:
+        messages.add_message(request, messages.ERROR, form.errors.values()[0][0])
+    return redirect('index')
+
+
+def subscribe_email(request, pk):
+    rule = get_object_or_404(ReminderRule, pk=int(pk))
+    form = rule.get_email_form(request.POST)
+    if form.is_valid():
+        form.save(request.LANGUAGE_CODE)
+        messages.add_message(request, messages.SUCCESS, _('We subscribed your email!'))
     else:
         messages.add_message(request, messages.ERROR, form.errors.values()[0][0])
     return redirect('index')
