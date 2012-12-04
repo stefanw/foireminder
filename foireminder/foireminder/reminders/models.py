@@ -212,3 +212,26 @@ class ReminderRequest(models.Model):
             subject=subject,
             body=body
         )
+
+
+class EmailReminder(models.Model):
+    rule = models.ForeignKey(ReminderRule)
+    email = models.EmailField()
+    timestamp = models.DateTimeField()
+    language = models.CharField(max_length=10, default='en')
+
+    class Meta:
+        unique_together = (("rule", "email"),)
+
+    def __unicode__(self):
+        return u"%s on %s" % (self.email, self.rule)
+
+    def send_notification(self):
+        from django.utils import translation
+        translation.activate(self.language)
+        # TODO: finish mail template
+        send_mail(_("FOI Reminder: a request needs to be made"),
+            _('Please follow this link'),
+            settings.DEFAULT_FROM_EMAIL,
+            [self.email]
+        )
