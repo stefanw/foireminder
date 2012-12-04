@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-11-10 15:41-0200\n"
-"PO-Revision-Date: 2012-11-10 15:46-0300\n"
+"POT-Creation-Date: 2012-12-04 19:38+0100\n"
+"PO-Revision-Date: 2012-12-04 19:43+0100\n"
 "Last-Translator: Stefan Wehrmeyer <mail@stefanwehrmeyer.com>\n"
 "Language-Team: SW <mail@fragdenstaat.de>\n"
 "Language: de\n"
@@ -26,77 +26,122 @@ msgstr "Deutsch"
 msgid "English"
 msgstr "Englisch"
 
-#: settings.py:45
-msgid "Portuguese"
-msgstr "Portugiesisch"
-
-#: settings.py:46
-msgid "Spanish"
-msgstr "Spanisch"
-
-#: reminders/forms.py:29
+#: reminders/forms.py:30
 msgid "Subject"
 msgstr "Betreff"
 
-#: reminders/forms.py:31
+#: reminders/forms.py:33
+msgid "All contracts since {last_date}"
+msgstr "Alle Verträge seit {last_date}"
+
+#: reminders/forms.py:35
+msgid "Body"
+msgstr "Nachricht"
+
+#: reminders/forms.py:38
+msgid "Please send me all contracts between {last_date} and {date}"
+msgstr "Bitte senden Sie mir alle Verträge zwischen dem {last_date} und {date}"
+
+#: reminders/forms.py:41
 msgid "Select site and public body"
 msgstr "Wähle Portal und Behörde"
 
-#: reminders/forms.py:42
+#: reminders/forms.py:52
 msgid "The given FOI site does not exist in our database."
 msgstr "Das angegebene FOI-Portal existiert nicht in unserer Datenbank."
 
-#: reminders/forms.py:45
+#: reminders/forms.py:55
 msgid "The given URL does not seem to be a requesting page."
 msgstr "Die angegebene URL scheint keine Anfrage-Stellen-Seite zu sein."
 
-#: reminders/forms.py:50
+#: reminders/forms.py:60
 msgid "Please give the URL of this request."
 msgstr "Bitte gib die URL der Anfrage an."
 
-#: reminders/forms.py:63
+#: reminders/forms.py:73
 msgid ""
 "The given site does not seem to be a valid request page for the FOI site."
 msgstr ""
 "Die angegebene URL scheint keine ordentliche Anfrageseite dieses FOI-Portals "
 "zu sein."
 
-#: reminders/forms.py:67
-msgid "The given site does not seem to contain the request text."
-msgstr "Die angegeben Seite scheint den Anfragetext nicht zu beinhalten."
+#: reminders/forms.py:89
+msgid "Email"
+msgstr "Email"
 
-#: reminders/models.py:19
+#: reminders/forms.py:91
+msgid "No spam. You can always unsubscribe."
+msgstr "Kein Spam. Sie können sich immer abmelden."
+
+#: reminders/models.py:24
 msgid "Yearly"
 msgstr "Jährlich"
 
-#: reminders/models.py:19
+#: reminders/models.py:24
 msgid "Years"
 msgstr "Jahre"
 
-#: reminders/models.py:20
+#: reminders/models.py:25
 msgid "Monthly"
 msgstr "Monatlich"
 
-#: reminders/models.py:20
+#: reminders/models.py:25
 msgid "Months"
 msgstr "Monate"
 
-#: reminders/models.py:36
+#: reminders/models.py:41
 msgid "Regular Expression to match request pages of this FOI site"
 msgstr "Regulärer Ausdruck um Anfrageseiten dieses FOI-Portals zu erkennen"
 
-#: reminders/models.py:38
+#: reminders/models.py:43
 msgid "Regular Expression to match requesting page of this FOI site"
 msgstr ""
 "Regulärer Ausdruck um Anfrage-Stellen-Seiten dieses FOI-Portals zu erkennen"
 
-#: reminders/models.py:40
+#: reminders/models.py:45
 msgid "String format pattern including {url}, {subject} and {body}"
 msgstr "Stringformatierungsregel mit {url}, {subject} und {body}"
 
-#: reminders/views.py:58
+#: reminders/models.py:93
+msgid "<last request date>"
+msgstr "<letztes Anfragedatum>"
+
+#: reminders/models.py:94
+msgid "<date of reminder>"
+msgstr "<Datum der Erinnerung>"
+
+#: reminders/models.py:177 reminders/models.py:180
+msgid "SHORT_DATE_FORMAT"
+msgstr "d.m.Y"
+
+#: reminders/models.py:233
+msgid "FOI Reminder: a request needs to be made"
+msgstr "IFG-Erinnerung: eine Anfrage muss gestellt werden"
+
+#: reminders/models.py:234
+msgid "Please follow this link"
+msgstr "Bitte folgen Sie diesem Link"
+
+#: reminders/views.py:63
 msgid "Thanks for making this request!"
 msgstr "Danke für das Stellen dieser Anfrage!"
+
+#: reminders/views.py:74
+msgid "We subscribed your email!"
+msgstr "Wir haben Ihre Email gespeichert!"
+
+#: reminders/templates/reminders/_email_form.html:7
+#, python-format
+msgid "Subscribe to \"%(name)s\""
+msgstr "Erinnerung zu \"%(name)s\" erhalten"
+
+#: reminders/templates/reminders/_email_form.html:15
+msgid "Cancel"
+msgstr "Abbrechen"
+
+#: reminders/templates/reminders/_email_form.html:16
+msgid "Subscribe"
+msgstr "Erinnerung erhalten"
 
 #: reminders/templates/reminders/_foisiteurlwidget.html:2
 msgid "Go here to find your public authority"
@@ -106,15 +151,15 @@ msgstr "Finde die Behörde auf dieser Seite"
 msgid "The URL you are looking for looks something like this:"
 msgstr "Die URL, die du suchst, sieht ungefähr so aus:"
 
-#: reminders/templates/reminders/_reminderrequest.html:8
+#: reminders/templates/reminders/_reminderrequest.html:9
 msgid "Make this request!"
 msgstr "Anfrage stellen!"
 
-#: reminders/templates/reminders/_reminderrequest.html:12
+#: reminders/templates/reminders/_reminderrequest.html:13
 msgid "Yes, I made this request"
 msgstr "Ich habe die Anfrage gestellt"
 
-#: reminders/templates/reminders/_reminderrequest.html:23
+#: reminders/templates/reminders/_reminderrequest.html:24
 msgid "Save this"
 msgstr "Speichern"
 
@@ -122,15 +167,15 @@ msgstr "Speichern"
 msgid "FOI Reminder"
 msgstr "IFG Erinnerer"
 
-#: templates/base.html:26
+#: templates/base.html:42
 msgid "Keep asking"
 msgstr "Dranbleiben und nachfragen"
 
-#: templates/base.html:60
+#: templates/base.html:64
 msgid "Made at IACC Hackathon 2012"
 msgstr "Gebaut beim IACC Hackathon 2012"
 
-#: templates/base.html:62
+#: templates/base.html:67
 msgid "Code on GitHub"
 msgstr "Code auf GitHub"
 
@@ -138,23 +183,67 @@ msgstr "Code auf GitHub"
 msgid "Requests that need to be made"
 msgstr "Anfragen, die gestellt werden müssen"
 
-#: templates/index.html:23
-msgid "Every"
-msgstr "Alle"
+#: templates/index.html:17
+msgid ""
+"At the moment there are no requests due. You can create one on the right."
+msgstr ""
+"Momentan müssen keine Anfragen gestellt werden. Sie können rechts eine neue "
+"Erinnerung anlegen."
 
-#: templates/index.html:25
-msgid "request the following:"
-msgstr "soll Folgendes angefragt werden:"
+#: templates/index.html:22
+msgid "Recently made requests"
+msgstr "Kürzlich gestellte Anfragen"
 
-#: templates/index.html:41
-msgid "Save this reminder"
-msgstr "Erinnerung speichern"
-
-#: templates/index.html:48
+#: templates/index.html:36
 msgid "Active reminders"
 msgstr "Aktive Erinnerungen"
 
-#: templates/index.html:51
+#: templates/index.html:39
 #, python-format
-msgid "Every %(interval)s %(freq)s request"
-msgstr "Alle %(interval)s %(freq)s"
+msgid "Every %(interval)s %(freq)s,  next %(date)s"
+msgstr "Alle %(interval)s %(freq)s, nächste am %(date)s"
+
+#: templates/index.html:46
+msgid "Subscribe by email to this reminder"
+msgstr "Erinnerung per Email erhalten"
+
+#: templates/index.html:51
+msgid "Create a new FOI Request Reminder"
+msgstr "Erstellen Sie eine neue IFG-Anfrage-Erinnerung"
+
+#: templates/index.html:62
+msgid "Every"
+msgstr "Alle"
+
+#: templates/index.html:64
+msgid "request the following:"
+msgstr "soll Folgendes angefragt werden:"
+
+#: templates/index.html:76
+msgid "Variables"
+msgstr "Variablen"
+
+#: templates/index.html:77
+msgid "You can use the following variables in your subject and body:"
+msgstr "Sie können folgende Variablen in Betreff und Nachricht verwenden:"
+
+#: templates/index.html:81
+msgid "Insert date of reminder"
+msgstr "Füge Datum der Erinnerung ein"
+
+#: templates/index.html:85
+msgid "Insert date of last request"
+msgstr "Füge Datum der letzten Anfrage ein"
+
+#: templates/index.html:104
+msgid "Save this reminder"
+msgstr "Erinnerung speichern"
+
+#~ msgid "Portuguese"
+#~ msgstr "Portugiesisch"
+
+#~ msgid "Spanish"
+#~ msgstr "Spanisch"
+
+#~ msgid "The given site does not seem to contain the request text."
+#~ msgstr "Die angegeben Seite scheint den Anfragetext nicht zu beinhalten."
