@@ -1,0 +1,20 @@
+{% load i18n %}
+{% load url from future %}
+{% with form=object.get_email_form %}
+<div class="modal hide fade" id="email-subscribe-{{ object.id }}" tabindex="-1" role="dialog" aria-labelledby="email-subscribe-{{ object.id }}-label" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h3 id="email-subscribe-{{ object.id }}-label">{% blocktrans with name=object.subject %}Subscribe to "{{ name }}"{% endblocktrans %}</h3>
+  </div>
+  <form action="{% url 'subscribe_email' pk=object.id %}" method="post">
+    {% csrf_token %}
+    <div class="modal-body">
+      {{ form.email }}
+    </div>
+    <div class="modal-footer">
+      <button class="btn" data-dismiss="modal" aria-hidden="true">{% trans "Cancel" %}</button>
+      <button type="submit" class="btn btn-primary">{% trans "Subscribe" %}</button>
+    </div>
+  </form>
+</div>
+{% endwith %}

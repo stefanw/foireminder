@@ -1,9 +1,10 @@
 {% load i18n %}
 <h4>
   <small>{{ object.rule.foisite.name }}, {{ object.rule.foisite.country }}</small><br/>
-  {{ object.subject|truncatechars:50 }}</h4>
-<p>{{ object.body|truncatewords:50 }}</p>
-<a target="_blank" class="btn btn-primary" href="{{ object.get_request_url }}">
+  {{ object.subject|truncatechars:50 }}
+</h4>
+<blockquote>{{ object.body }}</blockquote>
+<a target="_blank" class="btn btn-primary" href="{{ object.get_make_request_url }}">
   <i class="icon-arrow-right icon-white"></i>
   {% trans "Make this request!" %}
 </a>

@@ -8,52 +8,103 @@
 <div class="row">
   <div class="span6">
     <h3>{% trans "Requests that need to be made" %}</h3>
-    {% for request in requests %}
+    {% for request in due_requests %}
       {% with object=request %}
         {% include "reminders/_reminderrequest.html" %}
       {% endwith %}
+    {% empty %}
+      <p>
+        {% trans "At the moment there are no requests due. You can create one on the right." %}
+      </p>
     {% endfor %}
   </div>
   <div class="span6">
+    <h3>{% trans "Recently made requests" %}</h3>
+    {% for object in made_requests %}
+      <h4>
+        <small>{{ object.rule.foisite.name }}, {{ object.rule.foisite.country }}, {{ object.request_date|date:"SHORT_DATE_FORMAT" }}</small><br/>
+        <a target="_blank" href="{{ object.request_url }}">
+          {{ object.subject|truncatechars:50 }}
+        </a>
+      </h4>
+    {% endfor %}
+  </div>
+</div>
+<hr/>
+<div class="row">
+  <div class="span6">
+    <h3>{% trans "Active reminders" %}</h3>
+    {% for object in reminders %}
+      <h4>
+        <small>{% blocktrans with freq=object.readable_frequency interval=object.interval date=object.next_date.start|date:"SHORT_DATE_FORMAT" %}Every {{ interval }} {{ freq }},  next {{ date }}{% endblocktrans %}</small>
+        <br/>{{ object.subject_dummy }}
+      </h4>
+      <blockquote>{{ object.body_dummy }}</blockquote>
+      {% include "reminders/_email_form.html" %}
+      <a class="btn btn-small" href="#email-subscribe-{{ object.id }}" data-toggle="modal">
+        <i class="icon-bullhorn"></i>
+        {% trans "Subscribe by email to this reminder" %}
+      </a>
+    {% endfor %}
+  </div>
+  <div class="span6">
+    <h4>{% trans "Create a new FOI Request Reminder" %}</h4>
     <form method="post" action="{% url "new" %}">
       {% csrf_token %}
-    	<div class="inline">
+      <div class="inline">
+        {% if form.non_field_errors %}
+        <div class="alert alert-error">
+          {{ form.non_field_errors }}
+        </div>
+        {% endif %}
         {{ form.interval.errors }}
         {{ form.frequency.errors }}
-    	  {% trans "Every" %} {{ form.interval }}
-    	  {{ form.frequency }}
-    	  <br/>{% trans "request the following:" %}
-    	</div>
+        {% trans "Every" %} {{ form.interval }}
+        {{ form.frequency }}
+        {% trans "request the following:" %}
+      </div>
       {{ form.subject.errors }}
       {{ form.subject.label_tag }}
       {{ form.subject }}
-      {{ form.body.errors }}
-      {{ form.body.label_tag }}
-      {{ form.body }}
+      <div class="row">
+        <div class="span3">
+          {{ form.body.errors }}
+          {{ form.body.label_tag }}
+          {{ form.body }}
+        </div>
+        <div class="span3">
+          <h5>{% trans "Variables" %}</h5>
+          {% blocktrans %}You can use the following variables in your subject and body:{% endblocktrans %}
+          <ul>
+            <li>
+              <code>{date}</code>:
+              {% trans "Insert date of reminder" %}
+            </li>
+            <li>
+              <code>{last_date}</code>:
+              {% trans "Insert date of last request" %}
+            </li>
+          </ul>
+          <p>Example:</p>
+          <blockquote>
+            Please send me all contracts between {last_date} and {date} inclusively.
+          </blockquote>
+        </div>
+      </div>
       {{ form.foisite.errors }}
       {{ form.foisite.label_tag }}
       {{ form.foisite }}
-      <div id="foisiteurl-container" style="display:none">
+      <div id="foisiteurl-container"{% if not form.is_bound %} style="display:none"{% endif %}>
         {{ form.url.errors }}
         {{ form.url }}
       </div>
       <p>
-        <button type="submit" class="btn btn-primary">{% trans "Save this reminder" %}</button>
+        <button type="submit" class="btn btn-primary">
+          <i class="icon-ok icon-white"></i>
+          {% trans "Save this reminder" %}
+        </button>
       </p>
     </form>
-  </div>
-</div>
-<div class="row">
-  <div class="span6">
-    <h3>{% trans "Active reminders" %}</h3>
-    {% for reminder in reminders %}
-      <h4>
-        <small>{% blocktrans with freq=reminder.readable_frequency interval=reminder.interval %}Every {{ interval }} {{ freq }} request{% endblocktrans %}</small>
-        <br/>{{ reminder.subject }}
-      </h4>
-    {% endfor %}
-  </div>
-  <div class="span6">
   </div>
 </div>
 

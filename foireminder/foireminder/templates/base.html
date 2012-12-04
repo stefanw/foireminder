@@ -6,12 +6,15 @@
   <title>{% block title %}{% trans "FOI Reminder" %}{% endblock %}</title>
   <link href="{{ STATIC_URL }}css/bootstrap.css" rel="stylesheet">
   <link href="{{ STATIC_URL }}css/bootstrap-responsive.css" rel="stylesheet">
+  <link href="{{ STATIC_URL }}css/custom.css" rel="stylesheet">
+
   <meta http-equiv="Content-Language" content="{{ LANGUAGE_CODE }}" />
   <meta name="language" content="{{ LANGUAGE_CODE }}" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <link rel="shortcut icon" href="{{ STATIC_URL }}img/favicon.ico" />
   <link rel="apple-touch-icon" href="{{ STATIC_URL }}img/apple-touch-icon.png"/>
+
 
   <script src="{{ STATIC_URL }}js/jquery.js" type="text/javascript" charset="utf-8"></script>
   {% block extra_head %}
@@ -22,21 +25,22 @@
 
   <div id="main" class="container">
     <div class="page-header">
-      <h1>
-        FOI Reminder <small>{% trans "Keep asking" %}</small>
-      </h1>
-      <div style="position:absolute;top:0;right:0">
+      <div class="languages">
         <form action="/language/setlang/" method="post">
           {% csrf_token %}
           <input name="next" type="hidden" value="/" />
             {% get_language_info_list for LANGUAGES as languages %}
             {% for language in languages %}
-              <button class="btn btn-mini" name="language" value="{{ language.code }}">
+              <button class="btn btn-mini {% if language.code == LANGUAGE_CODE %}btn-success{% endif %}" name="language" value="{{ language.code }}">
                 {{ language.name_local }}
               </button>
             {% endfor %}
         </form>
       </div>
+      <h1>
+        <img id="logo" src="{{ STATIC_URL }}img/logo.png" alt="FOI Reminder"/>
+        FOI Reminder <small>{% trans "Keep asking" %}</small>
+      </h1>
     </div>
     {% if messages %}
     <div class="container">
@@ -58,12 +62,14 @@
     <div class="row">
       <ul class="span12 unstyled pagination-centered">
         <li>{% trans "Made at IACC Hackathon 2012" %}</li>
+        <li><a href="http://www.okfn.org/">Open Knowledge Foundation</a></li>
         <li>
           <a href="https://github.com/stefanw/foireminder">{% trans "Code on GitHub" %}</a>
         </li>
       </ul>
     </div>
   </footer>
+  <script src="{{ STATIC_URL }}js/bootstrap-modal.js" type="text/javascript" charset="utf-8"></script>
   {% block extra_footer %}
   {% endblock %}
   <script>

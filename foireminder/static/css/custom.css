@@ -1,0 +1,65 @@
+.languages {
+  float:right;
+}
+
+#footer ul {
+  margin: 0 auto 1em;
+  text-align: center;
+}
+
+#footer li {
+  display: inline;
+  margin: 0 1em;
+}
+
+#logo {
+  -webkit-transition: all 1s ease-in-out;
+  -moz-transition: all 1s ease-in-out;
+  -o-transition: all 1s ease-in-out;
+  -ms-transition: all 1s ease-in-out;
+  transition: all 1s ease-in-out;
+  -webkit-animation-name: dance;
+  -webkit-animation-duration: 15s;
+  -webkit-animation-iteration-count: infinite;
+  -webkit-animation-direction: alternate;
+  -webkit-transform-origin: 18px 20px;
+  -webkit-animation-timing-function: ease-in-out;
+}
+
+@-webkit-keyframes dance {
+    20% {
+        -moz-transform: rotate(0deg);
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    22% {
+        -moz-transform: rotate(80deg);
+        -webkit-transform: rotate(80deg);
+        transform: rotate(80deg);
+    }
+    24% {
+        -moz-transform: rotate(0deg);
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    26% {
+        -moz-transform: rotate(80deg);
+        -webkit-transform: rotate(80deg);
+        transform: rotate(80deg);
+    }
+    28% {
+        -moz-transform: rotate(0deg);
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    30% {
+        -moz-transform: rotate(80deg);
+        -webkit-transform: rotate(80deg);
+        transform: rotate(80deg);
+    }
+    32% {
+        -moz-transform: rotate(0deg);
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+}
