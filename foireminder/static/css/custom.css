@@ -2,9 +2,12 @@
   float:right;
 }
 
+#footer {
+  text-align: center;
+}
+
 #footer ul {
   margin: 0 auto 1em;
-  text-align: center;
 }
 
 #footer li {
